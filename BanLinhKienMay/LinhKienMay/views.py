@@ -5,12 +5,13 @@ import urllib.error
 import urllib.request
 
 from django.conf import settings
+from django.conf import settings
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
-
+from django.views.decorators.http import require_POST, require_GET
 from .models import LinhKien
 
 SELECT = ("cpu", "main", "ram", "ssd", "hdd", "gpu", "psu", "cooler", "case")
@@ -132,3 +133,24 @@ def chat_api(request):
         log.warning("Chatbot API lỗi, dùng câu trả lời dự phòng: %s", e)
         reply = rule_reply(items)
     return JsonResponse({"reply": reply})
+
+@require_GET
+def export_linhkien(request):
+    expected = f"Token {settings.EXPORT_TOKEN}"
+    if request.headers.get("Authorization", "") != expected:
+        return JsonResponse({"error": "unauthorized"}, status=401)
+
+    qs = LinhKien.objects.select_related(*SELECT).order_by("id")
+    data = [
+        {
+            "id":           lk.id,
+            "loai":         lk.loai,
+            "ten":          lk.ten,
+            "hang":         lk.hang,
+            "gia_hien_tai": float(lk.gia_hien_tai),
+            "tom_tat":      lk.tom_tat,
+            "anh_dai_dien": request.build_absolute_uri(lk.anh) if lk.anh else "", 
+        }
+        for lk in qs
+    ]
+    return JsonResponse(data, safe=False)

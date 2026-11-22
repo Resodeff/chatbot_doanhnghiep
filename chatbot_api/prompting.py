@@ -14,6 +14,8 @@ def format_products(products, limit):
         line = f"- {p['ten']} | giá {gia}"
         if p.get("thong_so"):
             line += f" | {p['thong_so']}"
+        if p.get("anh"):
+            line += f" | ảnh: {p['anh']}"   # ← thêm dòng này
         lines.append(line)
     return "\n".join(lines)
 

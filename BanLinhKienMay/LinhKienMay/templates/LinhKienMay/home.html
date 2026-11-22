@@ -39,6 +39,7 @@
   #chat-msgs { flex: 1; padding: 10px; overflow-y: auto; font-size: 14px; }
   .msg { margin: 6px 0; padding: 8px 10px; border-radius: 10px; max-width: 85%; white-space: pre-line; }
   .bot { background: #eef2ff; }
+  .bot img { max-width: 100%; max-height: 180px; object-fit: contain; background: #fff; border-radius: 6px; margin-top: 6px; display: block; }
   .me { background: #2563eb; color: #fff; margin-left: auto; }
   #chat-form { display: flex; border-top: 1px solid #e5e7eb; }
   #chat-input { flex: 1; border: 0; padding: 12px; outline: none; }
@@ -70,7 +71,7 @@
   <div class="grid">
     {% for p in page %}
     <div class="card">
-      {% if p.anh %}<img src="{{ p.anh }}" alt="{{ p.ten }}">{% endif %}
+      {% if p.anh_dai_dien %}<img src="{{ p.anh_dai_dien }}" alt="{{ p.ten }}" loading="lazy">{% endif %}
       <div class="tag"><span>{{ p.hang }}</span><span>{{ p.get_loai_display }}</span></div>
       <div class="name">{{ p.ten }}</div>
       <div class="spec">{{ p.tom_tat }}</div>
@@ -109,10 +110,32 @@ const input = document.getElementById("chat-input");
 const chatHistory = [];   // lịch sử hội thoại gửi kèm để chatbot nhớ ngữ cảnh
 document.getElementById("chat-btn").onclick = () => box.classList.toggle("open");
 
+// Hàm chuyển đổi Markdown ảnh và chữ in đậm sang HTML an toàn
+function formatReply(text) {
+  let html = text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+  // Biến ![Tên](URL) thành thẻ <img> (bấm vào mở tab mới xem ảnh gốc)
+  html = html.replace(
+  /!\[([^\]]*)\]\((https?:\/\/[^\s)]+)\)/g,
+  '<a href="$2" target="_blank" rel="noopener"><img src="$2" alt="$1" loading="lazy"></a>'
+  );
+
+  // Biến **chữ in đậm** thành <strong>
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  return html;
+}
+
 function add(text, who) {
   const d = document.createElement("div");
   d.className = "msg " + who;
-  d.textContent = text;
+  if (who === "bot") {
+    d.innerHTML = formatReply(text);
+  } else {
+    d.textContent = text;
+  }
   msgs.appendChild(d);
   msgs.scrollTop = msgs.scrollHeight;
   return d;
@@ -132,7 +155,14 @@ document.getElementById("chat-form").onsubmit = async (e) => {
       body: JSON.stringify({message: text, history: chatHistory.slice(-12)}),
     });
     const data = await res.json();
-    wait.textContent = data.reply;
+    wait.innerHTML = formatReply(data.reply);
+
+    // Tự động cuộn xuống đáy sau khi ảnh load xong để không bị che chữ bên dưới
+    wait.querySelectorAll("img").forEach(img => {
+      img.onload = () => { msgs.scrollTop = msgs.scrollHeight; };
+    });
+    msgs.scrollTop = msgs.scrollHeight;
+
     chatHistory.push({role: "user", content: text}, {role: "assistant", content: data.reply});
   } catch {
     wait.textContent = "Lỗi kết nối, bạn thử lại nhé.";

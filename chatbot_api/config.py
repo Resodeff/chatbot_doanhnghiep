@@ -22,6 +22,14 @@ MAX_PRODUCTS = _int("MAX_PRODUCTS", 8)
 
 SYSTEM_PROMPT_FILE = BASE_DIR / os.getenv("SYSTEM_PROMPT_FILE", "system_prompt.txt")
 
+# ── RAG ──────────────────────────────────────────────────────────────────────
+EMBED_MODEL         = os.getenv("EMBED_MODEL", "nomic-embed-text:latest")
+CHROMA_DIR          = BASE_DIR / os.getenv("CHROMA_DIR", "chroma_db")
+DJANGO_EXPORT_URL   = os.getenv("DJANGO_EXPORT_URL", "http://127.0.0.1:8000/api/linhkien/export/")
+DJANGO_EXPORT_TOKEN = os.getenv("DJANGO_EXPORT_TOKEN", "")
+RAG_TOP_K           = _int("RAG_TOP_K", 6)
+RAG_FETCH_K         = _int("RAG_FETCH_K", 30)
+
 def load_system_prompt() -> str:
     """Đọc mỗi lần gọi để sửa file là có hiệu lực ngay, không cần restart."""
     return SYSTEM_PROMPT_FILE.read_text(encoding="utf-8").strip()

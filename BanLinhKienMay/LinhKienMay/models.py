@@ -22,7 +22,7 @@ class LinhKien(models.Model):
     gia_hien_tai = models.DecimalField(max_digits=12, decimal_places=0)             # giá đang bán (VNĐ)
     gia_cu = models.DecimalField(max_digits=12, decimal_places=0, null=True, blank=True)  # giá niêm yết trước khi giảm
     phan_tram_giam = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
-    anh = models.URLField(max_length=500, blank=True)
+    anh_dai_dien = models.URLField(max_length=1000, blank=True)
 
     class Meta:
         verbose_name = "Linh kiện"
