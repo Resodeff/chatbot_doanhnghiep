@@ -1,52 +1,47 @@
+{% load static %}
+{% load linhkien_extras %}
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Linh kiện máy tính</title>
-<style>
-  * { box-sizing: border-box; }
-  body { font-family: system-ui, sans-serif; margin: 0; background: #f4f5f7; color: #222; }
-  header { background: #111827; color: #fff; padding: 16px 24px; font-size: 20px; font-weight: 600; }
-  .wrap { max-width: 1200px; margin: auto; padding: 16px 24px; }
-  .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-  .tabs a { padding: 6px 12px; border-radius: 16px; background: #fff; color: #374151;
-            text-decoration: none; font-size: 14px; box-shadow: 0 1px 2px #0001; }
-  .tabs a.on { background: #2563eb; color: #fff; }
-  .filter { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; align-items: center; }
-  .filter input[type=text], .filter select { padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 6px; }
-  .filter button { padding: 8px 14px; border: 0; background: #111827; color: #fff; border-radius: 6px; cursor: pointer; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
-  .card { background: #fff; border-radius: 10px; padding: 12px; box-shadow: 0 1px 4px #0001; display: flex; flex-direction: column; }
-  .card img { width: 100%; height: 150px; object-fit: contain; background: #fafafa; border-radius: 6px; }
-  .tag { font-size: 12px; color: #6b7280; margin-top: 4px; display: flex; justify-content: space-between; }
-  .name { font-weight: 600; margin: 4px 0; font-size: 14px; }
-  .spec { font-size: 12px; color: #6b7280; min-height: 30px; margin-bottom: 4px; }
-  .old { color: #9ca3af; text-decoration: line-through; font-size: 12px; }
-  .price { color: #dc2626; font-weight: 700; margin-top: auto; }
-  .out { color: #9ca3af; font-size: 12px; }
-  .pager { display: flex; gap: 12px; justify-content: center; align-items: center; margin: 24px 0; }
-  .pager a { padding: 6px 12px; background: #fff; border-radius: 6px; text-decoration: none; color: #111827; box-shadow: 0 1px 2px #0001; }
-
-  #chat-btn { position: fixed; right: 20px; bottom: 20px; width: 56px; height: 56px;
-              border-radius: 50%; border: 0; background: #2563eb; color: #fff;
-              font-size: 26px; cursor: pointer; box-shadow: 0 4px 12px #0004; z-index: 1000; }
-  #chat-box { position: fixed; right: 20px; bottom: 90px; width: 320px; height: 420px;
-              background: #fff; border-radius: 12px; box-shadow: 0 8px 24px #0003;
-              display: none; flex-direction: column; overflow: hidden; z-index: 1000; }
-  #chat-box.open { display: flex; }
-  #chat-head { background: #2563eb; color: #fff; padding: 12px; font-weight: 600; }
-  #chat-msgs { flex: 1; padding: 10px; overflow-y: auto; font-size: 14px; }
-  .msg { margin: 6px 0; padding: 8px 10px; border-radius: 10px; max-width: 85%; white-space: pre-line; }
-  .bot { background: #eef2ff; }
-  .me { background: #2563eb; color: #fff; margin-left: auto; }
-  #chat-form { display: flex; border-top: 1px solid #e5e7eb; }
-  #chat-input { flex: 1; border: 0; padding: 12px; outline: none; }
-  #chat-form button { border: 0; background: none; color: #2563eb; font-weight: 600; padding: 0 14px; cursor: pointer; }
-</style>
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem("lkpc-theme");
+    if (!t) {
+      t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    document.documentElement.setAttribute("data-theme", t);
+  } catch (e) { /* kệ, giữ mặc định light */ }
+})();
+</script>
+<link rel="stylesheet" href="{% static 'LinhKienMay/css/store.css' %}">
 </head>
 <body>
-<header>🖥️ Linh Kiện PC</header>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="?">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="6" y="6" width="12" height="12" rx="2"></rect>
+        <rect x="10" y="10" width="4" height="4"></rect>
+        <path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"></path>
+      </svg>
+      <span>Linh Kiện PC<small>Cửa hàng linh kiện máy tính</small></span>
+    </a>
+    <div class="header-spacer"></div>
+    <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Chuyển sang giao diện tối" aria-pressed="false" title="Đổi giao diện sáng / tối">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"></path>
+      </svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+      </svg>
+    </button>
+  </div>
+</header>
 
 <div class="wrap">
   <div class="tabs">
@@ -64,22 +59,23 @@
       <option value="-gia" {% if sort == "-gia" %}selected{% endif %}>Giá giảm dần</option>
     </select>
     <button>Lọc</button>
-    <span style="color:#6b7280;font-size:13px">{{ page.paginator.count }} sản phẩm</span>
+    <span class="count">{{ page.paginator.count }} sản phẩm</span>
   </form>
 
   <div class="grid">
     {% for p in page %}
     <div class="card">
-      {% if p.anh %}<img src="{{ p.anh }}" alt="{{ p.ten }}">{% endif %}
+      {% if p.phan_tram_giam %}<span class="badge">-{{ p.phan_tram_giam|floatformat:"0" }}%</span>{% endif %}
+      {% if p.anh_dai_dien %}<img src="{{ p.anh_dai_dien }}" alt="{{ p.ten }}" loading="lazy">{% endif %}
       <div class="tag"><span>{{ p.hang }}</span><span>{{ p.get_loai_display }}</span></div>
       <div class="name">{{ p.ten }}</div>
       <div class="spec">{{ p.tom_tat }}</div>
-      {% if p.gia_cu %}<div class="old">{{ p.gia_cu|floatformat:"0g" }}đ{% if p.phan_tram_giam %} (-{{ p.phan_tram_giam|floatformat:"0" }}%){% endif %}</div>{% endif %}
-      <div class="price">{{ p.gia_hien_tai|floatformat:"0g" }}đ</div>
-      {% if p.gia_giam %}<div class="out">Tiết kiệm {{ p.gia_giam|floatformat:"0g" }}đ</div>{% endif %}
+      {% if p.gia_cu %}<div class="old">{{ p.gia_cu|vnd }}đ{% if p.phan_tram_giam %} (-{{ p.phan_tram_giam|floatformat:"0" }}%){% endif %}</div>{% endif %}
+      <div class="price">{{ p.gia_hien_tai|vnd }}đ</div>
+      {% if p.gia_giam %}<div class="out">Tiết kiệm {{ p.gia_giam|vnd }}đ</div>{% endif %}
     </div>
     {% empty %}
-    <p>Không có sản phẩm phù hợp.</p>
+    <p class="empty">Không có sản phẩm phù hợp.</p>
     {% endfor %}
   </div>
 
@@ -90,9 +86,18 @@
   </div>
 </div>
 
-<button id="chat-btn" aria-label="Chat tư vấn">💬</button>
+<button id="chat-btn" aria-label="Chat tư vấn">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+  </svg>
+</button>
 <div id="chat-box">
-  <div id="chat-head">Tư vấn linh kiện</div>
+  <div id="chat-head">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+    </svg>
+    Tư vấn linh kiện
+  </div>
   <div id="chat-msgs">
     <div class="msg bot">Chào bạn! Bạn đang cần tìm linh kiện gì?</div>
   </div>
@@ -103,41 +108,11 @@
 </div>
 
 <script>
-const box = document.getElementById("chat-box");
-const msgs = document.getElementById("chat-msgs");
-const input = document.getElementById("chat-input");
-const chatHistory = [];   // lịch sử hội thoại gửi kèm để chatbot nhớ ngữ cảnh
-document.getElementById("chat-btn").onclick = () => box.classList.toggle("open");
-
-function add(text, who) {
-  const d = document.createElement("div");
-  d.className = "msg " + who;
-  d.textContent = text;
-  msgs.appendChild(d);
-  msgs.scrollTop = msgs.scrollHeight;
-  return d;
-}
-
-document.getElementById("chat-form").onsubmit = async (e) => {
-  e.preventDefault();
-  const text = input.value.trim();
-  if (!text) return;
-  add(text, "me");
-  input.value = "";
-  const wait = add("Đang trả lời...", "bot");
-  try {
-    const res = await fetch("{% url 'chat_api' %}", {
-      method: "POST",
-      headers: {"Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}"},
-      body: JSON.stringify({message: text, history: chatHistory.slice(-12)}),
-    });
-    const data = await res.json();
-    wait.textContent = data.reply;
-    chatHistory.push({role: "user", content: text}, {role: "assistant", content: data.reply});
-  } catch {
-    wait.textContent = "Lỗi kết nối, bạn thử lại nhé.";
-  }
+window.CHAT_CONFIG = {
+  apiUrl: "{% url 'chat_api' %}",
+  csrfToken: "{{ csrf_token }}"
 };
 </script>
+<script src="{% static 'LinhKienMay/js/store.js' %}" defer></script>
 </body>
 </html>
