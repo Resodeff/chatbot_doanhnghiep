@@ -31,6 +31,15 @@
       <span>Linh Kiện PC<small>Cửa hàng linh kiện máy tính</small></span>
     </a>
     <div class="header-spacer"></div>
+    <div class="auth-area">
+      {% if user.is_authenticated %}
+        <span class="auth-name">Xin chào, {{ user.username }}</span>
+        <form method="post" action="{% url 'dang_xuat' %}">{% csrf_token %}<button class="auth-btn" type="submit">Đăng xuất</button></form>
+      {% else %}
+        <a class="auth-btn" href="{% url 'dang_nhap' %}">Đăng nhập</a>
+        <a class="auth-btn solid" href="{% url 'dang_ky' %}">Đăng ký</a>
+      {% endif %}
+    </div>
     <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Chuyển sang giao diện tối" aria-pressed="false" title="Đổi giao diện sáng / tối">
       <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"></path>

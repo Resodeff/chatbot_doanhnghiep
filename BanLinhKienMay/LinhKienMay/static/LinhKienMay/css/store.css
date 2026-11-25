@@ -386,3 +386,74 @@ button { font-family: inherit; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; }
 }
+
+/* ---------- Đăng ký / đăng nhập / lịch sử build ---------- */
+.auth-area { display: flex; align-items: center; gap: 8px; }
+.auth-area form { display: inline; margin: 0; }
+.auth-name { color: var(--header-text); font-size: 14px; font-weight: 600; white-space: nowrap; }
+.auth-btn {
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / .25);
+  background: rgb(255 255 255 / .1);
+  color: var(--header-text);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .2s ease;
+}
+.auth-btn:hover { background: rgb(255 255 255 / .2); }
+.auth-btn.solid { background: #fff; color: #0f172a; border-color: transparent; }
+.auth-wrap { max-width: 460px; margin: 40px auto; }
+.auth-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+.auth-card h1 { margin: 0 0 4px; font-size: 20px; }
+.auth-card .sub { color: var(--muted); font-size: 14px; margin: 0 0 8px; }
+.auth-card label { display: block; font-weight: 600; font-size: 14px; margin: 12px 0 4px; }
+.auth-card input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 14px;
+}
+.auth-card .helptext { font-size: 12px; color: var(--muted); }
+.auth-card .errorlist { color: var(--danger); font-size: 13px; margin: 4px 0; padding-left: 18px; }
+.auth-card button[type=submit] {
+  width: 100%;
+  margin-top: 18px;
+  padding: 11px;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+.auth-switch { text-align: center; margin-top: 14px; font-size: 14px; color: var(--muted); }
+.build-list { display: flex; flex-direction: column; gap: 14px; }
+.build-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+.build-item h2 { margin: 0 0 4px; font-size: 16px; }
+.build-item .meta { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
+.build-item ul { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.6; }
+.build-item .total { color: var(--price); font-weight: 800; margin-top: 8px; }
+@media (max-width: 640px) {
+  .auth-name { display: none; }
+  .auth-wrap { margin: 20px auto; }
+}
