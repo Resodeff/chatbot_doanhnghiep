@@ -1,0 +1,127 @@
+{% load static %}
+{% load linhkien_extras %}
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Linh kiện máy tính</title>
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem("lkpc-theme");
+    if (!t) {
+      t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    document.documentElement.setAttribute("data-theme", t);
+  } catch (e) { /* kệ, giữ mặc định light */ }
+})();
+</script>
+<link rel="stylesheet" href="{% static 'LinhKienMay/css/store.css' %}">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="?">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="6" y="6" width="12" height="12" rx="2"></rect>
+        <rect x="10" y="10" width="4" height="4"></rect>
+        <path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"></path>
+      </svg>
+      <span>Linh Kiện PC<small>Cửa hàng linh kiện máy tính</small></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="auth-area">
+      {% if user.is_authenticated %}
+        <span class="auth-name">Xin chào, {{ user.username }}</span>
+        <form method="post" action="{% url 'dang_xuat' %}">{% csrf_token %}<button class="auth-btn" type="submit">Đăng xuất</button></form>
+      {% else %}
+        <a class="auth-btn" href="{% url 'dang_nhap' %}">Đăng nhập</a>
+        <a class="auth-btn solid" href="{% url 'dang_ky' %}">Đăng ký</a>
+      {% endif %}
+    </div>
+    <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Chuyển sang giao diện tối" aria-pressed="false" title="Đổi giao diện sáng / tối">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"></path>
+      </svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="tabs">
+    <a href="?" class="{% if not loai %}on{% endif %}">Tất cả</a>
+    {% for code, label in loai_list %}
+      <a href="?loai={{ code }}" class="{% if loai == code %}on{% endif %}">{{ label }}</a>
+    {% endfor %}
+  </div>
+
+  <form class="filter" method="get">
+    <input type="hidden" name="loai" value="{{ loai }}">
+    <input type="text" name="q" value="{{ q }}" placeholder="Tìm tên hoặc hãng...">
+    <select name="sort">
+      <option value="gia" {% if sort != "-gia" %}selected{% endif %}>Giá tăng dần</option>
+      <option value="-gia" {% if sort == "-gia" %}selected{% endif %}>Giá giảm dần</option>
+    </select>
+    <button>Lọc</button>
+    <span class="count">{{ page.paginator.count }} sản phẩm</span>
+  </form>
+
+  <div class="grid">
+    {% for p in page %}
+    <div class="card">
+      {% if p.phan_tram_giam %}<span class="badge">-{{ p.phan_tram_giam|floatformat:"0" }}%</span>{% endif %}
+      {% if p.anh_dai_dien %}<img src="{{ p.anh_dai_dien }}" alt="{{ p.ten }}" loading="lazy">{% endif %}
+      <div class="tag"><span>{{ p.hang }}</span><span>{{ p.get_loai_display }}</span></div>
+      <div class="name">{{ p.ten }}</div>
+      <div class="spec">{{ p.tom_tat }}</div>
+      {% if p.gia_cu %}<div class="old">{{ p.gia_cu|vnd }}đ{% if p.phan_tram_giam %} (-{{ p.phan_tram_giam|floatformat:"0" }}%){% endif %}</div>{% endif %}
+      <div class="price">{{ p.gia_hien_tai|vnd }}đ</div>
+      {% if p.gia_giam %}<div class="out">Tiết kiệm {{ p.gia_giam|vnd }}đ</div>{% endif %}
+    </div>
+    {% empty %}
+    <p class="empty">Không có sản phẩm phù hợp.</p>
+    {% endfor %}
+  </div>
+
+  <div class="pager">
+    {% if page.has_previous %}<a href="?{{ qs_str }}&page={{ page.previous_page_number }}">← Trước</a>{% endif %}
+    <span>Trang {{ page.number }} / {{ page.paginator.num_pages }}</span>
+    {% if page.has_next %}<a href="?{{ qs_str }}&page={{ page.next_page_number }}">Sau →</a>{% endif %}
+  </div>
+</div>
+
+<button id="chat-btn" aria-label="Chat tư vấn">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+  </svg>
+</button>
+<div id="chat-box">
+  <div id="chat-head">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+    </svg>
+    Tư vấn linh kiện
+  </div>
+  <div id="chat-msgs">
+    <div class="msg bot">Chào bạn! Bạn đang cần tìm linh kiện gì?</div>
+  </div>
+  <form id="chat-form">
+    <input id="chat-input" placeholder="Nhập tin nhắn..." autocomplete="off">
+    <button>Gửi</button>
+  </form>
+</div>
+
+<script>
+window.CHAT_CONFIG = {
+  apiUrl: "{% url 'chat_api' %}",
+  csrfToken: "{{ csrf_token }}"
+};
+</script>
+<script src="{% static 'LinhKienMay/js/store.js' %}" defer></script>
+</body>
+</html>

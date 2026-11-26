@@ -37,7 +37,7 @@ class Command(BaseCommand):
                 key = lk["ten"]
                 if key in existing:                       # chạy lại: cập nhật giá/trạng thái
                     o = existing[key]
-                    for f in ("gia_hien_tai", "gia_cu", "phan_tram_giam", "hang"):
+                    for f in ("gia_hien_tai", "gia_cu", "phan_tram_giam", "hang", "anh_dai_dien"):
                         setattr(o, f, lk[f])
                     upd_objs.append(o)
                 else:
@@ -47,7 +47,7 @@ class Command(BaseCommand):
             LinhKien.objects.bulk_create(new_objs, batch_size=500)
             if upd_objs:
                 LinhKien.objects.bulk_update(
-                    upd_objs, ["gia_hien_tai", "gia_cu", "phan_tram_giam", "hang"], batch_size=500)
+                    upd_objs, ["gia_hien_tai", "gia_cu", "phan_tram_giam", "hang", "anh_dai_dien"], batch_size=500)
 
             # lấy lại id theo tên rồi tạo bảng con
             ids = {o.ten: o.pk for o in LinhKien.objects.filter(loai=loai)}
