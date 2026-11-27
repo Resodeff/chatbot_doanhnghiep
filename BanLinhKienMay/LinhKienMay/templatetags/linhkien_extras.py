@@ -13,7 +13,6 @@ from django import template
 
 register = template.Library()
 
-
 @register.filter
 def vnd(value):
     """So tien -> chuoi co dau cham moi 3 so. Vd: 1000000 -> '1.000.000'.

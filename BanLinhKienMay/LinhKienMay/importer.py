@@ -62,6 +62,7 @@ def read_file(path, loai):
                 "loai": loai, "ten": ten, "hang": hang[:50],
                 "gia_hien_tai": gia, "gia_cu": gia_cu,
                 "phan_tram_giam": _dec(r["giam_phan_tram"]) if gia_cu else None,
+                "anh_dai_dien": (r.get("anh_dai_dien") or "").strip()[:1000],
             }
             spec = parser(ten_raw, mo_ta)          # parse trên tên gốc (còn chữ 'Tản nước', 'Quạt'...)
             k = _key(ten)

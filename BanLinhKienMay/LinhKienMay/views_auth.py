@@ -8,9 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
-
 from .forms import DangKyForm
-
 
 def dang_ky(request):
     if request.user.is_authenticated:
@@ -25,7 +23,6 @@ def dang_ky(request):
         form = DangKyForm()
     return render(request, "LinhKienMay/dang_ky.html", {"form": form})
 
-
 def dang_nhap(request):
     if request.user.is_authenticated:
         return redirect("home")
@@ -37,7 +34,6 @@ def dang_nhap(request):
     else:
         form = AuthenticationForm(request)
     return render(request, "LinhKienMay/dang_nhap.html", {"form": form})
-
 
 @require_POST
 def dang_xuat(request):
